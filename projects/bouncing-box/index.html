@@ -18,6 +18,11 @@
 			top: 100px;
 			/* Change me! */
 			left: 0px;
+			background-color: grey;
+		}
+
+		body {
+			background-color:grey
 		}
 
 		.board {
@@ -46,19 +51,25 @@
 			var boardWidth = board.width();	// the maximum X-Coordinate of the screen
 
 			// Every 50 milliseconds, call the update Function (see below)
-			setInterval(update, 50);
+			var interval = setInterval(update, 50);
 
 			// Every time the box is clicked, call the handleBoxClick Function (see below)
 			box.on('click', handleBoxClick);
+			board.on('click', handleBoardClick);
 
 			// moves the Box to a new position on the screen along the X-Axis
-			function moveBoxTo(newPositionX) {
+			function moveBoxTo(newPositionX, newPositionY) {
 				box.css("left", newPositionX);
+				box.css("top", newPositionY);
 			}
 
 			// changes the text displayed on the Box
 			function changeBoxText(newText) {
 				box.text(newText);
+			}
+
+			function changeBoardText(newBoardText) {
+				board.text(newBoardText)
 			}
 
 			//////////////////////////////////////////////////////////////////
@@ -67,6 +78,20 @@
 
 			// TODO 2 - Variable declarations 
 
+			var positionX = 0;
+			var points = 0;
+			var speedX = 10;
+			var positionY = randNumY;
+			var speedY = 10;
+			var boardHeight = jQuery(window).height();
+			var misClick = 0;
+			var randNumX = Math.random() * boardWidth;
+			var randNumY = Math.random() * boardHeight;
+			var randRed = Math.floor(Math.random() * 255)
+			var randGreen = Math.floor(Math.random() * 255)
+			var randBlue = Math.floor(Math.random() * 255)
+			var colorStr = "rgb(" + randRed + ", " + randGreen + ", " + randBlue + ")";
+				box.css("background-color", colorStr);
 
 
 			/* 
@@ -75,7 +100,27 @@
 			turn it around! 
 			*/
 			function update() {
+				if (misClick > 10) {
+					endGame();
+				}
 
+				if (positionX > boardWidth) {
+					speedX = speedX * -1}
+				if (positionX < 0) {
+					speedX = speedX * -1
+				}
+				
+				if (positionY > boardHeight) {
+					speedY = speedY * -1}
+				if (positionY < 0) {
+					speedY = speedY * -1
+				}
+
+				
+				/* Your Code to Increase positionX by 10 HERE */
+				positionX = positionX + speedX;
+				positionY = positionY + speedY;
+				moveBoxTo(positionX, positionY);
 
 			};
 
@@ -85,9 +130,45 @@
 			the left side of the screen.
 			*/
 			function handleBoxClick() {
+				randNumX = Math.floor(Math.random() * boardWidth);
+				randNumY = Math.floor(Math.random() * boardHeight);
+				positionX = randNumX;
+				positionY = randNumY;
+				speedX = speedX + 3;
+				speedY = speedY + 3;
+				points = points + 1;
+				changeBoxText(points);
 
+				if (points % 3 === 0) {
+					speedX = speedX + 10;
+					speedY = speedY + 10;
+					var randRed = Math.floor(Math.random() * 255)
+					var randGreen = Math.floor(Math.random() * 255)
+					var randBlue = Math.floor(Math.random() * 255)
+					colorStr = "rgb(" + randRed + ", " + randGreen + ", " + randBlue + ")";
+					box.css("background-color", colorStr);
+				}
 
+			
 			};
+
+			function handleBoardClick() {
+				misClick = misClick + 1
+			};
+
+			function endGame() {				
+				clearInterval(interval);
+			};
+			
+		
+				
+
+				
+				
+				
+
+
+			
 
 
 
